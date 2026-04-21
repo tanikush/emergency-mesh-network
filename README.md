@@ -193,11 +193,6 @@ Expected: `{"success":true,"id":"..."}`
 - [x] CORS headers
 - [x] Environment variable config
 
-### 📸 Documentation
-- [x] Screenshots captured (4 scenes)
-- [x] README written
-- [x] GitHub repository created
-- [x] Code committed & pushed
 
 ---
 
