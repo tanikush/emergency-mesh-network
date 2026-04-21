@@ -1,385 +1,177 @@
-// Emergency Mesh Network - Frontend Logic
-// Minimal JavaScript for offline/online sync
+// Config
+const API_URL = 'YOUR_API_GATEWAY_URL_HERE/emergency';
+const Q_KEY = 'emr_q', H_KEY = 'emr_h';
 
-const STORAGE_KEY = 'emergency_queue';
-const HISTORY_KEY = 'emergency_history';
+// Elements
+const statusEl = document.getElementById('status');
+const formEl = document.getElementById('form');
+const msgEl = document.getElementById('msg');
+const locEl = document.getElementById('loc');
+const charsEl = document.getElementById('chars');
+const queueBox = document.getElementById('queue-box');
+const queueCount = document.getElementById('queue-count');
+const historyList = document.getElementById('history-list');
+const modal = document.getElementById('modal');
+const queueList = document.getElementById('queue-list');
 
-// Initialize app
+// Init
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
-});
-
-function initApp() {
-    updateOnlineStatus();
-    setupEventListeners();
+    updateStatus();
     loadHistory();
     updateQueueCount();
+    if (navigator.onLine) setTimeout(syncQueue, 1500);
+});
 
-    // Check for pending messages on startup (in case user comes back online)
-    if (navigator.onLine) {
-        setTimeout(syncQueue, 1000); // Delay to ensure stable connection
-    }
-}
+// Events
+formEl.addEventListener('submit', handleSubmit);
+window.addEventListener('online', () => { updateStatus(); showToast('Online! Syncing...', 'success'); syncQueue(); loadHistory(); });
+window.addEventListener('offline', () => { updateStatus(); showToast('Offline mode', 'warning'); });
+msgEl.addEventListener('input', () => charsEl.textContent = msgEl.value.length);
+modal.addEventListener('click', (e) => { if (e.target === modal) hideQueue(); });
 
-function setupEventListeners() {
-    // Form submission
-    document.getElementById('emergency-form').addEventListener('submit', handleFormSubmit);
-
-    // Network status changes
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    // Character counter
-    document.getElementById('message').addEventListener('input', function() {
-        document.getElementById('char-count').textContent = this.value.length;
-    });
-
-    // Close modal on outside click
-    document.getElementById('queue-modal').addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            closeQueue();
-        }
-    });
-}
-
-// Handle form submission
-async function handleFormSubmit(e) {
+// Main Functions
+async function handleSubmit(e) {
     e.preventDefault();
+    const text = msgEl.value.trim();
+    const loc = locEl.value.trim();
+    if (!text) return showToast('Enter message', 'error');
 
-    const messageText = document.getElementById('message').value.trim();
-    const location = document.getElementById('location').value.trim();
-
-    if (!messageText) {
-        alert('Please enter an emergency message');
-        return;
-    }
-
-    const message = {
+    const msg = {
         id: Date.now().toString(),
-        text: messageText,
-        location: location || 'Not specified',
+        text,
+        location: loc || 'Unknown',
         timestamp: new Date().toISOString(),
-        synced: false,
-        retryCount: 0
+        synced: false
     };
 
     if (navigator.onLine) {
-        // Try to send immediately
-        const success = await sendToAWS(message);
-        if (success) {
-            message.synced = true;
-            addToHistory(message);
-            showNotification('Alert sent successfully!', 'success');
-            e.target.reset();
-            document.getElementById('char-count').textContent = '0';
-        } else {
-            // If send fails, save locally
-            saveToLocalStorage(message);
-            showNotification('Message saved locally. Will retry.', 'warning');
-            e.target.reset();
-            document.getElementById('char-count').textContent = '0';
-        }
+        const ok = await sendToAWS(msg);
+        if (ok) { msg.synced = true; addToHistory(msg); showToast('Alert sent!', 'success'); }
+        else { saveToQueue(msg); showToast('Save locally (retry)', 'warning'); }
     } else {
-        // Offline - save locally
-        saveToLocalStorage(message);
-        showNotification('You are offline. Message saved locally.', 'offline');
-        e.target.reset();
-        document.getElementById('char-count').textContent = '0';
+        saveToQueue(msg);
+        showToast('Offline: saved locally', 'warning');
     }
 
+    formEl.reset();
+    charsEl.textContent = '0';
     updateQueueCount();
+    loadHistory();
 }
 
-// Send message to AWS (API Gateway → Lambda)
-async function sendToAWS(message) {
-    // REPLACE WITH YOUR ACTUAL API GATEWAY URL
-    const API_URL = 'YOUR_API_GATEWAY_URL_HERE/emergency';
-
+async function sendToAWS(msg) {
     try {
-        const response = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(message)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(msg)
         });
+        return res.ok;
+    } catch { return false; }
+}
 
-        if (response.ok) {
-            return true;
+function saveToQueue(msg) {
+    const q = getQueue();
+    q.push(msg);
+    localStorage.setItem(Q_KEY, JSON.stringify(q));
+}
+
+function getQueue() { return JSON.parse(localStorage.getItem(Q_KEY) || '[]'); }
+
+async function syncQueue() {
+    if (!navigator.onLine) return;
+    let q = getQueue();
+    if (!q.length) return;
+
+    showToast(`Syncing ${q.length} message(s)...`, 'info');
+    const remaining = [];
+
+    for (const msg of q) {
+        if (await sendToAWS(msg)) {
+            msg.synced = true;
+            addToHistory(msg);
         } else {
-            console.error('AWS send failed:', response.status);
-            return false;
+            msg.retry = (msg.retry || 0) + 1;
+            if (msg.retry < 3) remaining.push(msg);
         }
-    } catch (error) {
-        console.error('Network error:', error);
-        return false;
     }
-}
 
-// Save message to localStorage queue
-function saveToLocalStorage(message) {
-    let queue = getQueue();
-    queue.push(message);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+    localStorage.setItem(Q_KEY, JSON.stringify(remaining));
     updateQueueCount();
+    loadHistory();
+    showToast(remaining.length ? `${remaining.length} failed` : 'All synced!', remaining.length ? 'error' : 'success');
 }
 
-// Get queue from localStorage
-function getQueue() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+function addToHistory(msg) {
+    const h = getHistory();
+    h.unshift(msg);
+    if (h.length > 50) h.pop();
+    localStorage.setItem(H_KEY, JSON.stringify(h));
 }
 
-// Clear entire queue
-function clearQueue() {
-    if (confirm('Are you sure you want to clear all pending messages?')) {
-        localStorage.removeItem(STORAGE_KEY);
-        updateQueueCount();
-        closeQueue();
-        showNotification('Queue cleared', 'info');
-    }
+function getHistory() { return JSON.parse(localStorage.getItem(H_KEY) || '[]'); }
+
+function loadHistory() {
+    const h = getHistory();
+    historyList.innerHTML = h.length ? h.map(m => `
+        <div class="msg ${m.synced ? 'sent' : ''}">
+            <div class="msg-time">${new Date(m.timestamp).toLocaleString()}</div>
+            <div class="msg-text">${escapeHtml(m.text)}</div>
+            ${m.location !== 'Unknown' ? `<div class="msg-loc">📍 ${escapeHtml(m.location)}</div>` : ''}
+        </div>
+    `).join('') : '<p class="empty">No messages sent yet</p>';
 }
 
-// View queue in modal
-function viewQueue() {
-    const queue = getQueue();
-    const modal = document.getElementById('queue-modal');
-    const queueList = document.getElementById('queue-list');
-
-    if (queue.length === 0) {
-        queueList.innerHTML = '<p style="text-align:center;color:#888;">No pending messages</p>';
+// UI Updates
+function updateStatus() {
+    if (navigator.onLine) {
+        statusEl.className = 'status-badge online';
+        statusEl.innerHTML = '<span class="indicator"></span><span class="text">● Online - Connected</span>';
     } else {
-        queueList.innerHTML = queue.map(msg => `
-            <div class="queue-item">
-                <div class="queue-message">${msg.text}</div>
-                <div class="queue-time">
-                    ${new Date(msg.timestamp).toLocaleString()}
-                    ${msg.location !== 'Not specified' ? ` • 📍 ${msg.location}` : ''}
-                </div>
-                ${msg.retryCount > 0 ? `<div style="color:#ff6e40;font-size:0.8rem;">Retry attempts: ${msg.retryCount}</div>` : ''}
-            </div>
-        `).join('');
+        statusEl.className = 'status-badge offline';
+        statusEl.innerHTML = '<span class="indicator"></span><span class="text">● Offline - Messages queued</span>';
     }
+}
 
+function updateQueueCount() {
+    const c = getQueue().length;
+    queueBox.style.display = c ? 'block' : 'none';
+    queueCount.textContent = c;
+}
+
+function showQueue() {
+    const q = getQueue();
+    queueList.innerHTML = q.map(m => `
+        <div class="queue-item">
+            <div class="queue-item-text">${m.text}</div>
+            <div class="queue-item-time">${new Date(m.timestamp).toLocaleString()}</div>
+        </div>
+    `).join('') || '<p>No pending messages</p>';
     modal.style.display = 'flex';
 }
 
-function closeQueue() {
-    document.getElementById('queue-modal').style.display = 'none';
-}
+function hideQueue() { modal.style.display = 'none'; }
 
-// Update queue count badge
-function updateQueueCount() {
-    const queue = getQueue();
-    const queueInfo = document.getElementById('queue-info');
-    const countSpan = document.getElementById('queue-count');
-
-    if (queue.length > 0) {
-        queueInfo.style.display = 'block';
-        countSpan.textContent = queue.length;
-    } else {
-        queueInfo.style.display = 'none';
+function clearQueue() {
+    if (confirm('Clear all pending?')) {
+        localStorage.removeItem(Q_KEY);
+        updateQueueCount();
+        hideQueue();
+        showToast('Queue cleared', 'info');
     }
 }
 
-// Update online/offline status UI
-function updateOnlineStatus() {
-    const statusBar = document.getElementById('status-bar');
-
-    if (navigator.onLine) {
-        statusBar.className = 'online';
-        statusBar.textContent = '● You are ONLINE - Connected to mesh network';
-    } else {
-        statusBar.className = 'offline';
-        statusBar.textContent = '● You are OFFLINE - Messages will save locally';
-    }
+function showToast(msg, type = 'info') {
+    const toast = document.createElement('div');
+    toast.textContent = msg;
+    const colors = { success: '#00c853', error: '#ff3d00', warning: '#ffc107', info: '#2196f3' };
+    toast.style.cssText = `position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:8px;color:#fff;background:${colors[type]};z-index:10000;font-weight:600;animation:slideIn .3s`;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
-// Handle coming online
-async function handleOnline() {
-    updateOnlineStatus();
-    showNotification('Connection restored! Syncing messages...', 'success');
-
-    // Wait a moment for stable connection
-    setTimeout(async () => {
-        await syncQueue();
-        loadHistory(); // Refresh history
-    }, 1000);
-}
-
-// Handle going offline
-function handleOffline() {
-    updateOnlineStatus();
-    showNotification('You are offline. Messages will be saved.', 'offline');
-}
-
-// Sync all pending messages to AWS
-async function syncQueue() {
-    if (!navigator.onLine) return;
-
-    let queue = getQueue();
-    if (queue.length === 0) return;
-
-    showNotification(`Syncing ${queue.length} message(s)...`, 'info');
-
-    // Process queue sequentially
-    const remaining = [];
-    let syncedCount = 0;
-
-    for (const message of queue) {
-        // Skip already synced (shouldn't happen, but safe)
-        if (message.synced) {
-            syncedCount++;
-            continue;
-        }
-
-        const success = await sendToAWS(message);
-
-        if (success) {
-            message.synced = true;
-            addToHistory(message);
-            syncedCount++;
-        } else {
-            message.retryCount = (message.retryCount || 0) + 1;
-
-            // Give up after 3 failed attempts
-            if (message.retryCount < 3) {
-                remaining.push(message);
-            } else {
-                // Move to failed messages
-                saveFailedMessage(message);
-                showNotification(`Failed to send message after 3 attempts: ${message.text.substring(0, 30)}...`, 'error');
-            }
-        }
-    }
-
-    // Update localStorage with remaining messages
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
-    updateQueueCount();
-
-    if (syncedCount > 0) {
-        showNotification(`Synced ${syncedCount} message(s) successfully!`, 'success');
-    }
-}
-
-// Save failed message (optional - for debugging)
-function saveFailedMessage(message) {
-    let failed = JSON.parse(localStorage.getItem('failed_messages') || '[]');
-    failed.push({ ...message, failedAt: new Date().toISOString() });
-    localStorage.setItem('failed_messages', JSON.stringify(failed));
-}
-
-// Add message to history
-function addToHistory(message) {
-    let history = getHistory();
-    history.unshift(message); // Add to beginning
-    // Keep only last 50 messages
-    if (history.length > 50) history = history.slice(0, 50);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-}
-
-// Get history from localStorage
-function getHistory() {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-}
-
-// Load and display history
-function loadHistory() {
-    const history = getHistory();
-    const messageList = document.getElementById('message-list');
-
-    if (history.length === 0) {
-        messageList.innerHTML = '<p class="empty-state">No messages sent yet.</p>';
-        return;
-    }
-
-    messageList.innerHTML = history.map(msg => `
-        <div class="message-card ${msg.synced ? 'synced' : 'pending'}">
-            <div class="message-header">
-                <span>${new Date(msg.timestamp).toLocaleString()}</span>
-                <span class="message-status ${msg.synced ? 'synced' : 'pending'}">
-                    ${msg.synced ? '✓ Sent' : '⏳ Pending'}
-                </span>
-            </div>
-            <div class="message-text">${escapeHtml(msg.text)}</div>
-            ${msg.location && msg.location !== 'Not specified' ? `<div class="message-location">📍 ${escapeHtml(msg.location)}</div>` : ''}
-        </div>
-    `).join('');
-}
-
-// Escape HTML to prevent XSS
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-// Show notification toast
-function showNotification(message, type) {
-    // Remove existing notification
-    const existing = document.querySelector('.notification');
-    if (existing) existing.remove();
-
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-
-    // Add styles dynamically
-    Object.assign(notification.style, {
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        padding: '12px 20px',
-        borderRadius: '4px',
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: '14px',
-        zIndex: '9999',
-        animation: 'slideIn 0.3s ease',
-        maxWidth: '300px'
-    });
-
-    // Type-specific colors
-    switch (type) {
-        case 'success':
-            notification.style.background = '#00c853';
-            break;
-        case 'error':
-            notification.style.background = '#ff3d00';
-            break;
-        case 'warning':
-            notification.style.background = '#ffc107';
-            notification.style.color = '#000';
-            break;
-        case 'info':
-            notification.style.background = '#2196f3';
-            break;
-        case 'offline':
-            notification.style.background = '#666';
-            break;
-    }
-
-    document.body.appendChild(notification);
-
-    // Auto-remove after 4 seconds
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transition = 'opacity 0.3s';
-        setTimeout(() => notification.remove(), 300);
-    }, 4000);
-}
-
-// Add CSS animation for notification
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
