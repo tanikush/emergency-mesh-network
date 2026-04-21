@@ -219,8 +219,8 @@ This project shows:
 
 - **GitHub:** https://github.com/tanikush/emergency-mesh-network
 - **Live Demo:** (S3 deployment — optional)
-- **LinkedIn:** [your-linkedin]
-- **Portfolio:** [your-portfolio]
+- **LinkedIn:** [[your-linkedin]](https://www.linkedin.com/in/tanisha-kushwah-280944284/)
+- **Portfolio:** [[your-portfolio]](https://tanikush.github.io/portfolio/)
 
 ---
 
