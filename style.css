@@ -1,0 +1,358 @@
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+/* Status Bar */
+#status-bar {
+    padding: 12px 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#status-bar.online {
+    background: #00c853;
+    color: #000;
+}
+
+#status-bar.offline {
+    background: #ff3d00;
+    color: #fff;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Container */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #ff3d00;
+}
+
+.subtitle {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Warning Banner */
+.warning-banner {
+    background: rgba(255, 61, 0, 0.15);
+    border: 1px solid #ff3d00;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #ddd;
+}
+
+textarea, input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #ff3d00;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* Send Button */
+.send-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #ff3d00 0%, #ff6e40 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 61, 0, 0.4);
+}
+
+.send-btn:active {
+    transform: translateY(0);
+}
+
+/* Queue Info */
+.queue-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+}
+
+.queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.queue-header strong {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.view-queue-btn {
+    padding: 8px 16px;
+    background: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.view-queue-btn:hover {
+    background: #ffca2c;
+}
+
+/* Message History */
+.history-section {
+    margin-top: 40px;
+}
+
+.history-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #ff3d00;
+    padding-bottom: 10px;
+}
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    padding: 30px;
+    font-style: italic;
+}
+
+/* Message Card */
+.message-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid #ff3d00;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.message-card.synced {
+    border-left-color: #00c853;
+}
+
+.message-card.syncing {
+    border-left-color: #ffc107;
+    opacity: 0.7;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.message-status {
+    font-weight: 600;
+}
+
+.message-status.synced { color: #00c853; }
+.message-status.pending { color: #ffc107; }
+.message-status.failed { color: #ff3d00; }
+
+.message-text {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.message-location {
+    font-size: 0.9rem;
+    color: #ff6e40;
+    font-style: italic;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1a1a2e;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #ffc107;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.queue-list {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.queue-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border-left: 3px solid #ffc107;
+}
+
+.queue-item .queue-message {
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.queue-item .queue-time {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: right;
+}
+
+.clear-btn {
+    padding: 10px 20px;
+    background: #ff3d00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.clear-btn:hover {
+    background: #e63600;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 1.6rem;
+    }
+
+    .send-btn {
+        padding: 16px;
+        font-size: 1rem;
+    }
+
+    .queue-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

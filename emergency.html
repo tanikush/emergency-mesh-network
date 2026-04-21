@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Mesh Network</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Status Bar -->
+    <div id="status-bar" class="offline">
+        ● You are OFFLINE - Messages will queue locally
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <header>
+            <h1>🚨 Emergency Alert System</h1>
+            <p class="subtitle">Offline-to-Online Mesh Network</p>
+        </header>
+
+        <!-- Warning Banner -->
+        <div class="warning-banner">
+            ⚠️ If internet is down, your message will be saved locally and sent automatically when connection returns.
+        </div>
+
+        <!-- Emergency Form -->
+        <form id="emergency-form">
+            <div class="form-group">
+                <label for="message">Emergency Message *</label>
+                <textarea 
+                    id="message" 
+                    placeholder="Describe your emergency situation..." 
+                    required
+                    maxlength="500"
+                ></textarea>
+                <small><span id="char-count">0</span>/500 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location (Optional)</label>
+                <input 
+                    type="text" 
+                    id="location" 
+                    placeholder="Village name, landmark, or coordinates"
+                >
+            </div>
+
+            <button type="submit" class="send-btn">
+                SEND EMERGENCY ALERT
+            </button>
+        </form>
+
+        <!-- Queue Info -->
+        <div id="queue-info" class="queue-info" style="display: none;">
+            <div class="queue-header">
+                <span>📡 Pending Messages: <strong id="queue-count">0</strong></span>
+                <button onclick="viewQueue()" class="view-queue-btn">View Queue</button>
+            </div>
+        </div>
+
+        <!-- Message History -->
+        <section class="history-section">
+            <h2>Message History</h2>
+            <div id="message-list" class="message-list">
+                <p class="empty-state">No messages sent yet.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Queue Modal (Hidden by default) -->
+    <div id="queue-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pending Message Queue</h3>
+                <button onclick="closeQueue()" class="close-btn">&times;</button>
+            </div>
+            <div id="queue-list" class="queue-list"></div>
+            <div class="modal-footer">
+                <button onclick="clearQueue()" class="clear-btn">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
