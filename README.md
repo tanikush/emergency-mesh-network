@@ -246,14 +246,6 @@ Expected: `{"success":true,"id":"..."}`
 
 ---
 
-## 🐛 Known Limitations
-
-- No user authentication (single-device demo)
-- localStorage not encrypted (for demo only)
-- No WebRTC mesh (future enhancement)
-- SNS requires subscription confirmation
-- No rate limiting (add for production)
-
 ---
 
 ## 📖 Learning Resources Used
