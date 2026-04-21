@@ -74,17 +74,17 @@ python -m http.server 8000
 
 ## 📋 What's Built (✅ DONE)
 
-| # | Component | Status | Details |
-|---|-----------|--------|---------|
-| 1 | **Frontend UI** | ✅ Complete | HTML form, history panel, queue modal |
-| 2 | **Styling** | ✅ Complete | Mobile-responsive dark emergency theme |
-| 3 | **Offline Logic** | ✅ Complete | localStorage queue, auto-sync, retry |
-| 4 | **Backend Code** | ✅ Complete | Lambda function (DynamoDB + SNS) |
-| 5 | **Screenshots** | ✅ Complete | 4 demo images captured |
-| 6 | **Documentation** | ✅ Complete | README, code comments |
-| 7 | **GitHub** | ✅ Complete | Repository live, commits pushed |
+| # | Component | Status | What's Done |
+|---|-----------|--------|-------------|
+| 1 | **Frontend UI** | ✅ | HTML form, history panel, queue modal |
+| 2 | **Styling** | ✅ | Mobile-responsive dark emergency theme |
+| 3 | **Offline Logic** | ✅ | localStorage queue, auto-sync, retry |
+| 4 | **Backend Code** | ✅ | Lambda function (DynamoDB + SNS) |
+| 5 | **Screenshots** | ✅ | 4 demo images captured |
+| 6 | **Documentation** | ✅ | README, code comments |
+| 7 | **GitHub** | ✅ | Repository live, commits pushed |
 
-**Total code:** ~155 lines (frontend ~140 + backend ~15)
+**Total:** ~155 lines (frontend ~140 + backend ~15)
 
 ---
 
@@ -94,17 +94,17 @@ python -m http.server 8000
 
 | # | Task | Status | Priority | Est. Time |
 |---|------|--------|----------|-----------|
-| 1 | Create AWS Free Tier account | ⏳ Pending | High | 15 min |
-| 2 | Create DynamoDB table `EmergencyMessages` | ⏳ Pending | High | 10 min |
-| 3 | Create SNS topic `EmergencyAlerts` | ⏳ Pending | High | 10 min |
-| 4 | Deploy Lambda function (upload code) | ⏳ Pending | High | 15 min |
-| 5 | Attach IAM policies (DynamoDB + SNS) | ⏳ Pending | High | 10 min |
-| 6 | Set Lambda env vars (`TABLE`, `SNS_ARN`) | ⏳ Pending | Medium | 5 min |
-| 7 | Create API Gateway (POST → Lambda) | ⏳ Pending | High | 20 min |
-| 8 | Enable CORS on API Gateway | ⏳ Pending | High | 5 min |
-| 9 | Deploy API to `prod` stage | ⏳ Pending | Medium | 5 min |
-| 10 | Update `app.js` with API URL | ⏳ Pending | High | 2 min |
-| 11 | Test end-to-end flow | ⏳ Pending | High | 10 min |
+| 1 | Create AWS Free Tier account | ⏳ | High | 15 min |
+| 2 | Create DynamoDB table `EmergencyMessages` | ⏳ | High | 10 min |
+| 3 | Create SNS topic `EmergencyAlerts` | ⏳ | High | 10 min |
+| 4 | Deploy Lambda function (upload code) | ⏳ | High | 15 min |
+| 5 | Attach IAM policies (DynamoDB + SNS) | ⏳ | High | 10 min |
+| 6 | Set Lambda env vars (`TABLE`, `SNS_ARN`) | ⏳ | Medium | 5 min |
+| 7 | Create API Gateway (POST → Lambda) | ⏳ | High | 20 min |
+| 8 | Enable CORS on API Gateway | ⏳ | High | 5 min |
+| 9 | Deploy API to `prod` stage | ⏳ | Medium | 5 min |
+| 10 | Update `app.js` with API URL | ⏳ | High | 2 min |
+| 11 | Test end-to-end flow | ⏳ | High | 10 min |
 
 **Phase 1 Total:** ~2 hours
 
@@ -177,6 +177,21 @@ const API_URL = 'YOUR_API_GATEWAY_URL/emergency';
 
 ---
 
+## 📊 Code Metrics
+
+| Metric | Value |
+|--------|-------|
+| Frontend code | ~140 lines |
+| Backend code | ~15 lines |
+| Total code | ~155 lines |
+| Dependencies | 1 (boto3) |
+| Bundle size | ~10KB |
+| AWS services used | 4 |
+| Monthly cost (AWS) | ₹0 (free tier) |
+| Offline reliability | 100% |
+
+---
+
 ## 🎯 Why This Stands Out
 
 1. **Real problem** — Disaster communication gap, not a toy project
@@ -185,19 +200,6 @@ const API_URL = 'YOUR_API_GATEWAY_URL/emergency';
 4. **<200 lines** — Concise, maintainable, readable
 5. **Works immediately** — No setup needed to demo locally
 6. **Production patterns** — Retry logic, queue management, error handling
-
----
-
-## 📊 Metrics
-
-| Metric | Value |
-|--------|-------|
-| Frontend code | ~140 lines |
-| Backend code | ~15 lines |
-| Total code | ~155 lines |
-| Dependencies | 1 (boto3) |
-| AWS monthly cost | ₹0 (free tier) |
-| Offline reliability | 100% |
 
 ---
 
@@ -234,8 +236,8 @@ This project shows:
 
 - **GitHub:** https://github.com/tanikush/emergency-mesh-network
 - **Live Demo:** (S3 deployment — optional)
-- **LinkedIn:** [[your-linkedin]](https://www.linkedin.com/in/tanisha-kushwah-280944284/)
-- **Portfolio:** [[your-portfolio]](https://tanikush.github.io/portfolio/)
+- **LinkedIn:** [your-linkedin]
+- **Portfolio:** [your-portfolio]
 
 ---
 
