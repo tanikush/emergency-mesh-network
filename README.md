@@ -169,67 +169,7 @@ Expected: `{"success":true,"id":"..."}`
 
 ---
 
-## 💡 What's Built
 
-### ✅ Completed (Frontend)
-- [x] HTML form with message + location inputs
-- [x] CSS styling (emergency dark theme, responsive)
-- [x] JavaScript offline detection (`navigator.onLine`)
-- [x] localStorage queue implementation
-- [x] Message history panel
-- [x] Queue modal (view pending)
-- [x] Auto-sync on network restore
-- [x] Retry logic (3 attempts, FIFO)
-- [x] Toast notifications
-- [x] Character counter
-- [x] Mobile responsive layout
-
-### ✅ Completed (Backend Code)
-- [x] Lambda handler (`lambda_function.py`)
-- [x] DynamoDB integration (put_item)
-- [x] SNS alert publishing
-- [x] Input validation
-- [x] Error handling
-- [x] CORS headers
-- [x] Environment variable config
-
-
----
-
-## ⏳ What's Next (To-Do)
-
-### Phase 1: AWS Integration
-- [ ] Create AWS Free Tier account
-- [ ] Install AWS CLI & configure credentials
-- [ ] Create DynamoDB table `EmergencyMessages`
-- [ ] Create SNS topic `EmergencyAlerts` + confirm subscription
-- [ ] Deploy Lambda function (upload `lambda_function.py`)
-- [ ] Attach IAM policies (DynamoDB + SNS access)
-- [ ] Set Lambda environment variables (`TABLE`, `SNS_ARN`)
-- [ ] Create API Gateway (REST API, POST `/emergency` → Lambda)
-- [ ] Enable CORS on API Gateway
-- [ ] Deploy API to `prod` stage
-- [ ] Copy API Gateway invoke URL
-- [ ] Update `app.js` with real endpoint
-- [ ] Test end-to-end flow
-
-### Phase 2: Deployment (Optional)
-- [ ] Deploy frontend to S3 (static hosting)
-- [ ] Enable CloudFront CDN
-- [ ] Configure custom domain
-- [ ] Set up HTTPS
-- [ ] Add monitoring (CloudWatch alarms)
-
-### Phase 3: Enhancements
-- [ ] Service Worker (PWA installable)
-- [ ] Geolocation auto-fill
-- [ ] QR code sharing (Bluetooth)
-- [ ] Hindi/regional language support
-- [ ] Admin dashboard (view all messages)
-- [ ] Priority message levels
-- [ ] SMS fallback (USSD for feature phones)
-
----
 
 ---
 
@@ -246,16 +186,6 @@ Expected: `{"success":true,"id":"..."}`
 
 ---
 
----
-
-## 📖 Learning Resources Used
-
-- AWS Lambda Documentation
-- MDN Web API (navigator.onLine, localStorage, fetch)
-- JavaScript.info (async/await, events)
-- DynamoDB Developer Guide
-
----
 
 ## 👤 About Me
 
@@ -275,8 +205,8 @@ This project demonstrates:
 ## 🔗 Connect
 
 - **GitHub:** https://github.com/tanikush/emergency-mesh-network
-- **LinkedIn:** [your-linkedin-url]
-- **Portfolio:** [your-portfolio-url]
+- **LinkedIn:** https://www.linkedin.com/in/tanisha-kushwah-280944284/
+- **Portfolio:** https://tanikush.github.io/portfolio/
 
 ---
 
