@@ -74,17 +74,17 @@ python -m http.server 8000
 
 ## 📋 What's Built (✅ DONE)
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Frontend UI** | ✅ | HTML form, history panel, queue modal |
-| **Styling** | ✅ | Mobile-responsive dark emergency theme |
-| **Offline Logic** | ✅ | localStorage queue, auto-sync, retry |
-| **Backend Code** | ✅ | Lambda function (DynamoDB + SNS) |
-| **Screenshots** | ✅ | 4 demo images captured |
-| **Documentation** | ✅ | README, code comments |
-| **GitHub** | ✅ | Repository live, commits pushed |
+| # | Component | Status | Details |
+|---|-----------|--------|---------|
+| 1 | **Frontend UI** | ✅ Complete | HTML form, history panel, queue modal |
+| 2 | **Styling** | ✅ Complete | Mobile-responsive dark emergency theme |
+| 3 | **Offline Logic** | ✅ Complete | localStorage queue, auto-sync, retry |
+| 4 | **Backend Code** | ✅ Complete | Lambda function (DynamoDB + SNS) |
+| 5 | **Screenshots** | ✅ Complete | 4 demo images captured |
+| 6 | **Documentation** | ✅ Complete | README, code comments |
+| 7 | **GitHub** | ✅ Complete | Repository live, commits pushed |
 
-**Code footprint:** ~155 lines total (frontend ~140 + backend ~15)
+**Total code:** ~155 lines (frontend ~140 + backend ~15)
 
 ---
 
@@ -92,47 +92,62 @@ python -m http.server 8000
 
 ### Phase 1: AWS Deployment 🚀
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Create AWS account | ⏳ | Free Tier signup |
-| DynamoDB table | ⏳ | `EmergencyMessages` (PK: id) |
-| SNS topic | ⏳ | `EmergencyAlerts`, confirm subscription |
-| Lambda deployment | ⏳ | Upload `lambda_function.py` + env vars |
-| API Gateway | ⏳ | POST `/emergency` → Lambda, enable CORS |
-| Update API URL | ⏳ | Edit `app.js` line 2 with endpoint |
-| End-to-end test | ⏳ | Verify message → DynamoDB flow |
+| # | Task | Status | Priority | Est. Time |
+|---|------|--------|----------|-----------|
+| 1 | Create AWS Free Tier account | ⏳ Pending | High | 15 min |
+| 2 | Create DynamoDB table `EmergencyMessages` | ⏳ Pending | High | 10 min |
+| 3 | Create SNS topic `EmergencyAlerts` | ⏳ Pending | High | 10 min |
+| 4 | Deploy Lambda function (upload code) | ⏳ Pending | High | 15 min |
+| 5 | Attach IAM policies (DynamoDB + SNS) | ⏳ Pending | High | 10 min |
+| 6 | Set Lambda env vars (`TABLE`, `SNS_ARN`) | ⏳ Pending | Medium | 5 min |
+| 7 | Create API Gateway (POST → Lambda) | ⏳ Pending | High | 20 min |
+| 8 | Enable CORS on API Gateway | ⏳ Pending | High | 5 min |
+| 9 | Deploy API to `prod` stage | ⏳ Pending | Medium | 5 min |
+| 10 | Update `app.js` with API URL | ⏳ Pending | High | 2 min |
+| 11 | Test end-to-end flow | ⏳ Pending | High | 10 min |
 
-### Phase 2: Polish ✨
+**Phase 1 Total:** ~2 hours
 
-| Task | Priority |
-|------|----------|
-| Deploy to S3 (public URL) | High |
-| Service Worker (PWA) | Medium |
-| Auto geolocation | Medium |
-| Input validation | High |
-| Rate limiting | Medium |
+---
 
-### Phase 3: Scale 📈
+### Phase 2: Production Polish ✨
 
-| Feature | Complexity |
-|---------|------------|
-| WebRTC mesh (P2P) | High |
-| Hindi + regional langs | Medium |
-| Admin dashboard | High |
-| SMS fallback (USSD) | High |
+| # | Task | Priority | Why |
+|---|------|----------|-----|
+| 1 | Deploy frontend to S3 | High | Public URL |
+| 2 | Enable CloudFront CDN | Medium | Faster global access |
+| 3 | Configure HTTPS | High | Security |
+| 4 | Add Service Worker (PWA) | Medium | Installable app |
+| 5 | Auto geolocation | Medium | UX improvement |
+| 6 | Input validation + sanitization | High | Security |
+| 7 | Rate limiting (API Gateway) | Medium | Prevent abuse |
+| 8 | CloudWatch monitoring | Low | Observability |
+
+---
+
+### Phase 3: Feature Scale 📈
+
+| # | Feature | Complexity | Impact |
+|---|---------|------------|--------|
+| 1 | WebRTC mesh (P2P, no server) | High | Revolutionary |
+| 2 | Hindi + regional languages | Medium | Accessibility |
+| 3 | Admin dashboard (React) | High | Management UI |
+| 4 | SMS fallback (USSD) | High | Feature phone support |
+| 5 | Priority message levels | Medium | Triage |
+| 6 | QR code sharing (Bluetooth) | Medium | Offline transfer |
 
 ---
 
 ## 💡 Key Decisions
 
 | Decision | Choice | Why |
-|----------|-------|-----|
-| **Framework** | Vanilla JS | No overhead, easy to review |
-| **Offline storage** | localStorage | Simple, sufficient for demo |
-| **Backend** | AWS Lambda | Serverless, free tier, scalable |
-| **Language** | Python | Fast prototyping, boto3 built-in |
-| **Database** | DynamoDB | NoSQL, serverless, pay-per-use |
-| **Notifications** | SNS | Managed, multi-protocol |
+|----------|--------|-----|
+| **Framework** | 🟢 Vanilla JS | No overhead, easy to review |
+| **Offline storage** | 💾 localStorage | Simple, sufficient for demo |
+| **Backend** | ☁️ AWS Lambda | Serverless, free tier, scalable |
+| **Language** | 🐍 Python | Fast prototyping, boto3 built-in |
+| **Database** | 🗄️ DynamoDB | NoSQL, serverless, pay-per-use |
+| **Notifications** | 📢 SNS | Managed, multi-protocol |
 
 ---
 
@@ -140,20 +155,20 @@ python -m http.server 8000
 
 **Resources to create:**
 
-| Resource | Name | Purpose |
-|----------|------|---------|
-| DynamoDB Table | `EmergencyMessages` | Persistent message storage |
-| SNS Topic | `EmergencyAlerts` | Email/SMS emergency alerts |
-| Lambda Function | `EmergencyHandler` | Backend logic (upload `lambda_function.py`) |
-| API Gateway | POST `/emergency` | HTTP endpoint → Lambda integration |
+| Resource | Name | Purpose | Icon |
+|----------|------|---------|------|
+| DynamoDB Table | `EmergencyMessages` | Persistent message storage | 🗄️ |
+| SNS Topic | `EmergencyAlerts` | Email/SMS emergency alerts | 📢 |
+| Lambda Function | `EmergencyHandler` | Backend logic (upload code) | ⚡ |
+| API Gateway | POST `/emergency` | HTTP endpoint → Lambda | 🌐 |
 
 **Lambda configuration:**
 
-| Setting | Value |
-|---------|-------|
-| Runtime | Python 3.12 |
-| Environment Variables | `TABLE=EmergencyMessages`, `SNS_ARN=<arn>` |
-| IAM Policies | `DynamoDBFullAccess`, `SNSFullAccess` |
+| Setting | Value | Icon |
+|---------|-------|------|
+| Runtime | Python 3.12 | 🐍 |
+| Env Vars | `TABLE`, `SNS_ARN` | ⚙️ |
+| IAM Policies | DynamoDB + SNS access | 🔐 |
 
 **Frontend update (`app.js`):**
 ```javascript
