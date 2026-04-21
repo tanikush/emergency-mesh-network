@@ -74,17 +74,29 @@ python -m http.server 8000
 
 ## 📋 What's Built (✅ DONE)
 
-| # | Component | Status | What's Done |
-|---|-----------|--------|-------------|
-| 1 | **Frontend UI** | ✅ | HTML form, history panel, queue modal |
-| 2 | **Styling** | ✅ | Mobile-responsive dark emergency theme |
-| 3 | **Offline Logic** | ✅ | localStorage queue, auto-sync, retry |
-| 4 | **Backend Code** | ✅ | Lambda function (DynamoDB + SNS) |
-| 5 | **Screenshots** | ✅ | 4 demo images captured |
-| 6 | **Documentation** | ✅ | README, code comments |
-| 7 | **GitHub** | ✅ | Repository live, commits pushed |
+**Frontend:**
+- ✅ HTML form (message + location)
+- ✅ CSS emergency theme (responsive)
+- ✅ Offline detection (`navigator.onLine`)
+- ✅ localStorage queue
+- ✅ Message history panel
+- ✅ Queue modal (view pending)
+- ✅ Auto-sync on network restore
+- ✅ Retry logic (3×, FIFO)
+- ✅ Toast notifications
+- ✅ Character counter
+- ✅ Mobile responsive
 
-**Total:** ~155 lines (frontend ~140 + backend ~15)
+**Backend:**
+- ✅ Lambda handler (`lambda_function.py`)
+- ✅ DynamoDB integration (`put_item`)
+- ✅ SNS alert publishing
+- ✅ Input validation
+- ✅ Error handling
+- ✅ CORS headers
+- ✅ Env variable config
+
+**Total:** ~155 lines | **Status:** Ready for AWS
 
 ---
 
@@ -92,19 +104,17 @@ python -m http.server 8000
 
 ### Phase 1: AWS Deployment 🚀
 
-| # | Task | Status | Priority | Est. Time |
-|---|------|--------|----------|-----------|
-| 1 | Create AWS Free Tier account | ⏳ | High | 15 min |
-| 2 | Create DynamoDB table `EmergencyMessages` | ⏳ | High | 10 min |
-| 3 | Create SNS topic `EmergencyAlerts` | ⏳ | High | 10 min |
-| 4 | Deploy Lambda function (upload code) | ⏳ | High | 15 min |
-| 5 | Attach IAM policies (DynamoDB + SNS) | ⏳ | High | 10 min |
-| 6 | Set Lambda env vars (`TABLE`, `SNS_ARN`) | ⏳ | Medium | 5 min |
-| 7 | Create API Gateway (POST → Lambda) | ⏳ | High | 20 min |
-| 8 | Enable CORS on API Gateway | ⏳ | High | 5 min |
-| 9 | Deploy API to `prod` stage | ⏳ | Medium | 5 min |
-| 10 | Update `app.js` with API URL | ⏳ | High | 2 min |
-| 11 | Test end-to-end flow | ⏳ | High | 10 min |
+- ⏳ Create AWS Free Tier account (15 min) — High
+- ⏳ DynamoDB table `EmergencyMessages` (10 min) — High
+- ⏳ SNS topic `EmergencyAlerts` (10 min) — High
+- ⏳ Deploy Lambda (upload code) (15 min) — High
+- ⏳ IAM policies (DynamoDB + SNS) (10 min) — High
+- ⏳ Lambda env vars (`TABLE`, `SNS_ARN`) (5 min) — Medium
+- ⏳ API Gateway (POST → Lambda) (20 min) — High
+- ⏳ Enable CORS (5 min) — High
+- ⏳ Deploy API to `prod` (5 min) — Medium
+- ⏳ Update `app.js` with API URL (2 min) — High
+- ⏳ Test end-to-end (10 min) — High
 
 **Phase 1 Total:** ~2 hours
 
@@ -112,42 +122,36 @@ python -m http.server 8000
 
 ### Phase 2: Production Polish ✨
 
-| # | Task | Priority | Why |
-|---|------|----------|-----|
-| 1 | Deploy frontend to S3 | High | Public URL |
-| 2 | Enable CloudFront CDN | Medium | Faster global access |
-| 3 | Configure HTTPS | High | Security |
-| 4 | Add Service Worker (PWA) | Medium | Installable app |
-| 5 | Auto geolocation | Medium | UX improvement |
-| 6 | Input validation + sanitization | High | Security |
-| 7 | Rate limiting (API Gateway) | Medium | Prevent abuse |
-| 8 | CloudWatch monitoring | Low | Observability |
+- ⏳ Deploy to S3 (High) — Public URL
+- ⏳ CloudFront CDN (Medium) — Faster access
+- ⏳ HTTPS (High) — Security
+- ⏳ Service Worker/PWA (Medium) — Installable
+- ⏳ Auto geolocation (Medium) — UX
+- ⏳ Input validation (High) — Security
+- ⏳ Rate limiting (Medium) — Prevent abuse
+- ⏳ CloudWatch monitoring (Low) — Observability
 
 ---
 
 ### Phase 3: Feature Scale 📈
 
-| # | Feature | Complexity | Impact |
-|---|---------|------------|--------|
-| 1 | WebRTC mesh (P2P, no server) | High | Revolutionary |
-| 2 | Hindi + regional languages | Medium | Accessibility |
-| 3 | Admin dashboard (React) | High | Management UI |
-| 4 | SMS fallback (USSD) | High | Feature phone support |
-| 5 | Priority message levels | Medium | Triage |
-| 6 | QR code sharing (Bluetooth) | Medium | Offline transfer |
+- ⏳ WebRTC mesh (P2P) (High) — Revolutionary
+- ⏳ Hindi + regional langs (Medium) — Accessibility
+- ⏳ Admin dashboard (React) (High) — Management UI
+- ⏳ SMS fallback (USSD) (High) — Feature phone support
+- ⏳ Priority message levels (Medium) — Triage
+- ⏳ QR code sharing (Bluetooth) (Medium) — Offline transfer
 
 ---
 
 ## 💡 Key Decisions
 
-| Decision | Choice | Why |
-|----------|--------|-----|
-| **Framework** | 🟢 Vanilla JS | No overhead, easy to review |
-| **Offline storage** | 💾 localStorage | Simple, sufficient for demo |
-| **Backend** | ☁️ AWS Lambda | Serverless, free tier, scalable |
-| **Language** | 🐍 Python | Fast prototyping, boto3 built-in |
-| **Database** | 🗄️ DynamoDB | NoSQL, serverless, pay-per-use |
-| **Notifications** | 📢 SNS | Managed, multi-protocol |
+- 🟢 **Vanilla JS** — No framework overhead
+- 💾 **localStorage** — Simple offline persistence
+- ☁️ **AWS Lambda** — Serverless, free tier
+- 🐍 **Python** — Fast prototyping, boto3 built-in
+- 🗄️ **DynamoDB** — NoSQL, pay-per-use
+- 📢 **SNS** — Managed notifications
 
 ---
 
@@ -155,22 +159,17 @@ python -m http.server 8000
 
 **Resources to create:**
 
-| Resource | Name | Purpose | Icon |
-|----------|------|---------|------|
-| DynamoDB Table | `EmergencyMessages` | Persistent message storage | 🗄️ |
-| SNS Topic | `EmergencyAlerts` | Email/SMS emergency alerts | 📢 |
-| Lambda Function | `EmergencyHandler` | Backend logic (upload code) | ⚡ |
-| API Gateway | POST `/emergency` | HTTP endpoint → Lambda | 🌐 |
+- 🗄️ DynamoDB Table — `EmergencyMessages` (persistent storage)
+- 📢 SNS Topic — `EmergencyAlerts` (email/SMS alerts)
+- ⚡ Lambda Function — `EmergencyHandler` (upload `lambda_function.py`)
+- 🌐 API Gateway — POST `/emergency` → Lambda (enable CORS)
 
 **Lambda configuration:**
+- Runtime: Python 3.12 🐍
+- Env vars: `TABLE=EmergencyMessages`, `SNS_ARN=<arn>` ⚙️
+- IAM: DynamoDB + SNS access 🔐
 
-| Setting | Value | Icon |
-|---------|-------|------|
-| Runtime | Python 3.12 | 🐍 |
-| Env Vars | `TABLE`, `SNS_ARN` | ⚙️ |
-| IAM Policies | DynamoDB + SNS access | 🔐 |
-
-**Frontend update (`app.js`):**
+**Update `app.js`:**
 ```javascript
 const API_URL = 'YOUR_API_GATEWAY_URL/emergency';
 ```
