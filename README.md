@@ -231,29 +231,6 @@ Expected: `{"success":true,"id":"..."}`
 
 ---
 
-## 🎯 Key Highlights for Recruiters
-
-**Real Problem, Real Code:**
-- Solves actual disaster communication gap
-- Production-grade patterns (retry, queue, idempotency)
-- Minimal codebase (<200 lines) but complete system
-
-**Modern Stack:**
-- **Frontend:** Vanilla JS (no frameworks, clean)
-- **Backend:** Python on AWS Lambda (serverless)
-- **Database:** DynamoDB (NoSQL, scalable)
-- **Notifications:** SNS (managed pub/sub)
-
-**DevOps Ready:**
-- Infrastructure as code possible (Terraform)
-- CI/CD pipeline friendly
-- Cost-optimized (pay-per-use)
-
-**Offline-First Design:**
-- Progressive enhancement pattern
-- Network-agnostic UX
-- Resilient to connectivity failures
-
 ---
 
 ## 📊 Code Metrics
