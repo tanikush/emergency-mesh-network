@@ -16,16 +16,8 @@ Offline-first emergency messaging system. Works without internet, syncs to AWS w
 
 ## 🏗️ Architecture
 
-```mermaid
-graph LR
-    A[Browser] --> B{Online?}
-    B -->|Yes| C[API Gateway]
-    B -->|No| D[localStorage]
-    C --> E[Lambda]
-    E --> F[(DynamoDB)]
-    E --> G[SNS]
-    D --> B
-```
+<img width="1536" height="1024" alt="Structure" src="https://github.com/user-attachments/assets/6bb18cf9-5827-42c1-a01c-5d7856babbbc" />
+
 
 **3-step flow:**
 1. User sends → Check `navigator.onLine`
