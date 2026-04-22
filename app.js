@@ -1,5 +1,5 @@
 // Config
-const API_URL = 'YOUR_API_GATEWAY_URL_HERE/emergency';
+const API_URL = 'https://lqlqqhbfq6.execute-api.ap-south-1.amazonaws.com/prod/emergency';
 const Q_KEY = 'emr_q', H_KEY = 'emr_h';
 
 // Elements
@@ -14,17 +14,47 @@ const historyList = document.getElementById('history-list');
 const modal = document.getElementById('modal');
 const queueList = document.getElementById('queue-list');
 
+// NEW: Fetch recent messages
+async function fetchMessages() {
+  try {
+    const response = await fetch(API_URL.replace('/emergency', '/messages'));
+    if (response.ok) {
+      const data = await response.json();
+      if (data.messages && data.messages.length > 0) {
+        historyList.innerHTML = data.messages.map(msg => `
+          <div class="message-item">
+            <small>${new Date(msg.timestamp).toLocaleString()}</small>
+            <p>${msg.message}</p>
+            ${msg.location ? `<small>📍 ${msg.location}</small>` : ''}
+          </div>
+        `).join('');
+      } else {
+        historyList.innerHTML = '<p>No messages sent yet</p>';
+      }
+    }
+  } catch (err) {
+    console.error('Fetch failed:', err);
+  }
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     updateStatus();
     loadHistory();
+    fetchMessages();  // NEW
     updateQueueCount();
     if (navigator.onLine) setTimeout(syncQueue, 1500);
 });
 
 // Events
 formEl.addEventListener('submit', handleSubmit);
-window.addEventListener('online', () => { updateStatus(); showToast('Online! Syncing...', 'success'); syncQueue(); loadHistory(); });
+window.addEventListener('online', () => { 
+    updateStatus(); 
+    showToast('Online! Syncing...', 'success'); 
+    syncQueue(); 
+    fetchMessages();  // NEW
+    loadHistory(); 
+});
 window.addEventListener('offline', () => { updateStatus(); showToast('Offline mode', 'warning'); });
 msgEl.addEventListener('input', () => charsEl.textContent = msgEl.value.length);
 modal.addEventListener('click', (e) => { if (e.target === modal) hideQueue(); });
@@ -46,8 +76,16 @@ async function handleSubmit(e) {
 
     if (navigator.onLine) {
         const ok = await sendToAWS(msg);
-        if (ok) { msg.synced = true; addToHistory(msg); showToast('Alert sent!', 'success'); }
-        else { saveToQueue(msg); showToast('Save locally (retry)', 'warning'); }
+        if (ok) { 
+            msg.synced = true; 
+            addToHistory(msg); 
+            showToast('Alert sent!', 'success'); 
+            fetchMessages();  // NEW
+        }
+        else { 
+            saveToQueue(msg); 
+            showToast('Save locally (retry)', 'warning'); 
+        }
     } else {
         saveToQueue(msg);
         showToast('Offline: saved locally', 'warning');
@@ -100,6 +138,7 @@ async function syncQueue() {
     updateQueueCount();
     loadHistory();
     showToast(remaining.length ? `${remaining.length} failed` : 'All synced!', remaining.length ? 'error' : 'success');
+    fetchMessages();  // NEW
 }
 
 function addToHistory(msg) {
