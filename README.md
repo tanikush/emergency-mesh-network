@@ -50,9 +50,13 @@ graph LR
 
 ## 📸 Screenshots
 
-| Form | Offline | Queue | Sent |
-|------|---------|-------|------|
+| Main UI | Offline Mode | Queue Modal | History |
+|---------|--------------|-------------|---------|
 | ![Main](./screenshots/main-ui.png) | ![Offline](./screenshots/offline-mode.png) | ![Queue](./screenshots/queue-modal.png) | ![History](./screenshots/history.png) |
+
+| API Gateway Endpoints | DynamoDB Data | Lambda Code | Live Website (HTTPS) |
+|-----------------------|----------------|-------------|----------------------|
+| ![API Gateway](./screenshots/api-gateway-endpoints.png) | ![DynamoDB](./screenshots/dynamodb-data.png) | ![Lambda](./screenshots/lambda-code.png) | ![Live](./screenshots/live-website-https.png) |
 
 ---
 
